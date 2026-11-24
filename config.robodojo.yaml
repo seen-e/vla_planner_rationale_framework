@@ -1,0 +1,36 @@
+# Maximum active inference units, independently per stage (A/C episodes; B adjacent pairs).
+stage_a_batch_size: 24
+stage_b_batch_size: 32
+stage_c_batch_size: 24
+api:
+  # Resolved from the external credentials file by planner_rationale.batch.
+  base_url: "configured_from_credentials"
+  api_key_env: "PLANNER_API_KEY"
+  timeout_seconds: 900
+  max_retries: 2
+  retry_backoff_seconds: 5
+models:
+  stage_a:
+    model: "configured_from_credentials"
+    temperature: 0
+    max_tokens: 16384
+    extra_body: {chat_template_kwargs: {enable_thinking: true}}
+  stage_b:
+    model: "configured_from_credentials"
+    temperature: 0
+    max_tokens: 16384
+    extra_body: {chat_template_kwargs: {enable_thinking: true}}
+  stage_c:
+    model: "configured_from_credentials"
+    temperature: 0
+    max_tokens: 16384
+    extra_body: {chat_template_kwargs: {enable_thinking: true}}
+sampling:
+  stage_a_interior_fps: 1
+  stage_a_max_interior_frames: 4
+  stage_a_max_images_per_request: 96
+  stage_b_fps: 2
+  stage_b_max_images_per_request: 120
+  image_max_side: 448
+  jpeg_quality: 82
+  in_memory_frame_cache: 512

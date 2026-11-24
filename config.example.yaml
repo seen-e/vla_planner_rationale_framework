@@ -1,0 +1,51 @@
+# batch_size = maximum number of concurrently active inference units:
+# A/C: episodes; B: (previous subtask, current subtask) pairs.
+# These are independent parameters, not the number of subtasks/images packed into one prompt.
+stage_a_batch_size: 2
+stage_b_batch_size: 4
+stage_c_batch_size: 2
+
+api:
+  base_url: "http://127.0.0.1:8000/v1"
+  api_key_env: "OPENAI_API_KEY"
+  timeout_seconds: 1800
+  max_retries: 3
+  retry_backoff_seconds: 2
+
+models:
+  stage_a:
+    model: "Qwen3-VL-8B-Instruct"
+    temperature: 0.1
+    max_tokens: 8192
+    json_mode: false   # Set true only if your OpenAI-compatible server supports response_format.
+    extra_body: {}     # e.g. {chat_template_kwargs: {enable_thinking: false}}
+  stage_b:
+    model: "Qwen3-VL-8B-Instruct"
+    temperature: 0.1
+    max_tokens: 4096
+    json_mode: false
+    extra_body: {}
+  stage_c:
+    model: "Qwen3-8B"
+    # base_url: "http://127.0.0.1:8001/v1"  # optional per-stage endpoint
+    # api_key_env: "STAGE_C_API_KEY"         # optional per-stage key
+    temperature: 0.0
+    max_tokens: 8192
+    json_mode: false
+    extra_body: {}
+
+sampling:
+  # Stage A: every subtask includes exact start/end boundary frames.
+  # 1 FPS interior candidates; select at most 4 evenly spaced candidates.
+  stage_a_interior_fps: 1
+  stage_a_max_interior_frames: 4
+  stage_a_max_images_per_request: 96
+
+  # Stage B: 2 FPS for previous AND current subtask, never silently downsampled.
+  stage_b_fps: 2
+  stage_b_max_images_per_request: 120
+
+  # Resize only downward and encode as JPEG. Original 224x224 stays 224x224.
+  image_max_side: 448
+  jpeg_quality: 82
+  in_memory_frame_cache: 512

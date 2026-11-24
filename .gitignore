@@ -1,0 +1,17 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+*.egg-info/
+build/
+dist/
+.env
+.env.*
+.credentials/
+credentials*.yaml
+credentials*.yml
+*.private.yaml
+outputs/
+predictions/
+transport_events/
